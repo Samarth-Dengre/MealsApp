@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useContext, useLayoutEffect } from "react";
 import {
   Button,
   Image,
@@ -12,26 +12,33 @@ import List from "../components/MealDetail/List";
 import Subtitle from "../components/MealDetail/Subtitle";
 import MealDetails from "../components/MealDetails";
 import { MEALS } from "../data/dummy-data";
+import { FavoritesContext } from "../store/context/favourites-context";
 
 function MealDetailScreen({ route, navigation }) {
+  const favMealsContext = useContext(FavoritesContext);
   const mealId = route.params.mealId;
+  const mealIsFav = favMealsContext.ids.includes(mealId);
   const meal = MEALS.find((meal) => meal.id === mealId);
-  //   function headerButtonPressHandler() {
-  //     console.log("pressed");
-  //   }
-  //   useLayoutEffect(() => {
-  //     navigation.setOptions({
-  //       headerRight: () => {
-  //         return (
-  //           <IconButton
-  //             icon="star"
-  //             color="white"
-  //             onPress={headerButtonPressHandler}
-  //           />
-  //         );
-  //       },
-  //     });
-  //   }, [navigation, headerButtonPressHandler]);
+  function changeFavoritesStatusHandler() {
+    if (mealIsFav) {
+      favMealsContext.removeFavorite(mealId);
+    } else {
+      favMealsContext.addFavorite(mealId);
+    }
+  }
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <IconButton
+            icon={mealIsFav ? "star" : "star-outline"}
+            color="white"
+            onPress={changeFavoritesStatusHandler}
+          />
+        );
+      },
+    });
+  }, [navigation, changeFavoritesStatusHandler]);
   return (
     <ScrollView style={{ marginBottom: 15 }}>
       <Image style={styles.image} source={{ uri: meal.imageUrl }} />

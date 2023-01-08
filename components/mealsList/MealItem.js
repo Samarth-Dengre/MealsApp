@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Pressable, Image, StyleSheet } from "react-native";
-import MealDetails from "./MealDetails";
+import MealDetails from "../MealDetails";
 
 function MealItem({
   title,
